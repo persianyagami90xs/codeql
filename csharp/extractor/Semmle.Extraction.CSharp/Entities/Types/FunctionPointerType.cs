@@ -11,9 +11,9 @@ namespace Semmle.Extraction.CSharp.Entities
         {
         }
 
-        public override void WriteId(TextWriter trapFile)
+        public override void WriteId(EscapingTextWriter trapFile)
         {
-            Symbol.BuildTypeId(Context, trapFile, Symbol);
+            Symbol.BuildTypeId(Context, trapFile, Symbol, constructUnderlyingTupleType: false);
             trapFile.Write(";functionpointertype");
         }
 
@@ -32,11 +32,11 @@ namespace Semmle.Extraction.CSharp.Entities
 
         public static FunctionPointerType Create(Context cx, IFunctionPointerTypeSymbol symbol) => FunctionPointerTypeFactory.Instance.CreateEntityFromSymbol(cx, symbol);
 
-        private class FunctionPointerTypeFactory : ICachedEntityFactory<IFunctionPointerTypeSymbol, FunctionPointerType>
+        private class FunctionPointerTypeFactory : CachedEntityFactory<IFunctionPointerTypeSymbol, FunctionPointerType>
         {
             public static FunctionPointerTypeFactory Instance { get; } = new FunctionPointerTypeFactory();
 
-            public FunctionPointerType Create(Context cx, IFunctionPointerTypeSymbol init) => new FunctionPointerType(cx, init);
+            public override FunctionPointerType Create(Context cx, IFunctionPointerTypeSymbol init) => new FunctionPointerType(cx, init);
         }
     }
 }

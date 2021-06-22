@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Semmle.Extraction.CSharp.Entities
 {
-    public sealed class Nullability
+    internal sealed class Nullability
     {
         public int Annotation { get; }
 
@@ -64,7 +64,7 @@ namespace Semmle.Extraction.CSharp.Entities
             NullableParameters = method.GetAnnotatedTypeArguments().Select(a => new Nullability(a)).ToArray();
         }
 
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
             return other is Nullability n && Annotation == n.Annotation && NullableParameters.SequenceEqual(n.NullableParameters);
         }
@@ -79,7 +79,7 @@ namespace Semmle.Extraction.CSharp.Entities
             return h;
         }
 
-        public void WriteId(TextWriter trapFile)
+        public void WriteId(EscapingTextWriter trapFile)
         {
             trapFile.Write(Annotation);
             trapFile.Write('(');
@@ -90,13 +90,13 @@ namespace Semmle.Extraction.CSharp.Entities
 
         public override string ToString()
         {
-            using var w = new StringWriter();
+            using var w = new EscapingTextWriter();
             WriteId(w);
             return w.ToString();
         }
     }
 
-    public class NullabilityEntity : CachedEntity<Nullability>
+    internal class NullabilityEntity : CachedEntity<Nullability>
     {
         public NullabilityEntity(Context cx, Nullability init) : base(cx, init)
         {
@@ -120,18 +120,18 @@ namespace Semmle.Extraction.CSharp.Entities
             }
         }
 
-        public override void WriteId(TextWriter trapFile)
+        public override void WriteId(EscapingTextWriter trapFile)
         {
             Symbol.WriteId(trapFile);
         }
 
         public static NullabilityEntity Create(Context cx, Nullability init) => NullabilityFactory.Instance.CreateEntity(cx, init, init);
 
-        private class NullabilityFactory : ICachedEntityFactory<Nullability, NullabilityEntity>
+        private class NullabilityFactory : CachedEntityFactory<Nullability, NullabilityEntity>
         {
             public static NullabilityFactory Instance { get; } = new NullabilityFactory();
 
-            public NullabilityEntity Create(Context cx, Nullability init) => new NullabilityEntity(cx, init);
+            public override NullabilityEntity Create(Context cx, Nullability init) => new NullabilityEntity(cx, init);
         }
     }
 

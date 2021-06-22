@@ -11,7 +11,7 @@ namespace Semmle.Extraction.CSharp.Entities
             PointedAtType = Create(cx, Symbol.PointedAtType);
         }
 
-        public override void WriteId(TextWriter trapFile)
+        public override void WriteId(EscapingTextWriter trapFile)
         {
             trapFile.WriteSubId(PointedAtType);
             trapFile.Write("*;type");
@@ -31,11 +31,11 @@ namespace Semmle.Extraction.CSharp.Entities
 
         public static PointerType Create(Context cx, IPointerTypeSymbol symbol) => PointerTypeFactory.Instance.CreateEntityFromSymbol(cx, symbol);
 
-        private class PointerTypeFactory : ICachedEntityFactory<IPointerTypeSymbol, PointerType>
+        private class PointerTypeFactory : CachedEntityFactory<IPointerTypeSymbol, PointerType>
         {
             public static PointerTypeFactory Instance { get; } = new PointerTypeFactory();
 
-            public PointerType Create(Context cx, IPointerTypeSymbol init) => new PointerType(cx, init);
+            public override PointerType Create(Context cx, IPointerTypeSymbol init) => new PointerType(cx, init);
         }
     }
 }

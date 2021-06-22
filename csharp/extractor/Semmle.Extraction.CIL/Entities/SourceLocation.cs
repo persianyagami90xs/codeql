@@ -4,7 +4,7 @@ using Semmle.Extraction.PDB;
 
 namespace Semmle.Extraction.CIL.Entities
 {
-    public sealed class PdbSourceLocation : LabelledEntity, ILocation
+    internal sealed class PdbSourceLocation : LabelledEntity, ILocation
     {
         private readonly Location location;
         private readonly PdbSourceFile file;
@@ -15,7 +15,7 @@ namespace Semmle.Extraction.CIL.Entities
             file = cx.CreateSourceFile(location.File);
         }
 
-        public override void WriteId(TextWriter trapFile)
+        public override void WriteId(EscapingTextWriter trapFile)
         {
             file.WriteId(trapFile);
             trapFile.Write(',');
